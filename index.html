@@ -13,7 +13,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23E3D5C2'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23303630'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#E3D5C2;--soft:#EDE3D4;--ink:#303630;--ink-h:#4A524A;--muted:#555B54;--hair:#CBBBA4;--frame:#3b3a38;
 --hh:60px;--r:20px;--ease:cubic-bezier(.16,1,.3,1);color-scheme:light;
@@ -148,7 +148,7 @@ footer a:not(.logo):hover{color:var(--ink)}
 .hero{--mh:clamp(250px,38svh,420px)}
 .phone-media .phone{height:clamp(340px,54svh,480px)}
 .menu{display:block}
-nav{position:absolute;left:0;right:0;top:100%;display:none;padding:1rem 1.25rem 1.5rem;background:rgba(227,213,194,.88);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+nav{position:absolute;left:0;right:0;top:100%;display:none;padding:1rem 1.25rem 1.5rem;background:rgba(227,213,194,.55);-webkit-backdrop-filter:blur(18px) saturate(1.15);backdrop-filter:blur(18px) saturate(1.15)}
 nav.open{display:block}
 nav ul{flex-direction:column;align-items:flex-start;gap:1.1rem}
 nav a:not(.btn){font-size:1.1rem;color:var(--ink)}
@@ -160,6 +160,30 @@ nav a:not(.btn){font-size:1.1rem;color:var(--ink)}
 @media(max-height:620px){section{min-height:0;padding-block:2rem}}
 @media(max-height:760px) and (min-width:880px){h2{font-size:clamp(1.8rem,3.4vw,2.7rem)}.pts{margin-top:1rem}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}.rv{opacity:1;transform:none}}
+
+/* Language switcher and Arabic typography */
+.lang-button{display:flex;align-items:center;justify-content:center;background:transparent;border:0;color:var(--ink);cursor:pointer;width:44px;height:44px;border-radius:50%;transition:background-color .25s}
+.lang-button:hover{background:rgba(48,54,48,.08)}
+.lang-button svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.lang-dialog{position:fixed;inset:0;margin:auto;width:min(92vw,390px);max-width:none;border:0;border-radius:22px;background:var(--soft);color:var(--ink);padding:clamp(1.5rem,5vw,2rem);box-shadow:0 20px 70px rgba(48,54,48,.18)}
+.lang-dialog::backdrop{background:rgba(48,54,48,.28);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.lang-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.45rem}
+.lang-dialog h2{font-size:2rem;margin:0}
+.lang-close{border:0;background:none;color:var(--ink);cursor:pointer;font:400 1.75rem/1 var(--sans);width:44px;height:44px;border-radius:50%}
+.lang-close:hover{background:rgba(48,54,48,.08)}
+.lang-dialog p{color:var(--muted);font-size:.9rem;margin-bottom:1.25rem}
+.lang-options{display:grid;grid-template-columns:1fr 1fr;gap:.35rem;background:var(--bg);padding:.35rem;border-radius:999px}
+.lang-option{min-height:48px;border:0;border-radius:999px;background:transparent;color:var(--ink);font:500 .95rem var(--sans);cursor:pointer}
+.lang-option[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.lang-option[lang="ar"]{font-family:"Noto Sans Arabic",Tahoma,Arial,sans-serif}
+html[lang="ar"]{--sans:"Noto Sans Arabic",Tahoma,Arial,sans-serif;--serif:"Noto Sans Arabic",Tahoma,Arial,sans-serif}
+html[lang="ar"] h1,html[lang="ar"] h2,html[lang="ar"] h3{line-height:1.4;letter-spacing:0}
+html[lang="ar"] h1{font-size:clamp(2rem,4.6vw,4.2rem)}
+html[lang="ar"] .logo{font-family:Inter,system-ui,sans-serif;direction:ltr;unicode-bidi:isolate}
+html[lang="ar"] .sl{font-style:normal}
+html[lang="ar"] input[type=email]{direction:ltr;text-align:right}
+@media(max-width:879px){nav .lang-button{justify-content:flex-start;width:44px}}
+
 </style>
 </head>
 <body>
@@ -197,8 +221,14 @@ nav a:not(.btn){font-size:1.1rem;color:var(--ink)}
 <button class="menu" id="mb" aria-expanded="false" aria-controls="nv">Menu</button>
 <nav id="nv" aria-label="Main"><ul>
 <li><a href="#how">How it works</a></li><li><a href="#device">The device</a></li><li><a href="#app">The app</a></li><li><a href="#faq">FAQ</a></li>
-<li><a class="btn" href="#preorder">Pre-order</a></li></ul></nav>
+<li><a class="btn" href="#preorder">Pre-order</a></li>
+<li><button class="lang-button" id="lang-open" type="button" aria-label="Choose language" aria-haspopup="dialog" aria-controls="lang-dialog" title="Choose language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.5 5.5 3.5 9s-1 6.5-3.5 9M12 3C9.5 5.5 8.5 8.5 8.5 12s1 6.5 3.5 9"/></svg></button></li></ul></nav>
 </div></header>
+<dialog class="lang-dialog" id="lang-dialog" aria-labelledby="lang-title" aria-describedby="lang-description">
+<div class="lang-dialog-head"><h2 id="lang-title">Language</h2><button class="lang-close" id="lang-close" type="button" aria-label="Close">×</button></div>
+<p id="lang-description">Choose your preferred language.</p>
+<div class="lang-options" role="group" aria-label="Choose language"><button class="lang-option" type="button" data-language="en" lang="en" dir="ltr" aria-pressed="true">English</button><button class="lang-option" type="button" data-language="ar" lang="ar" dir="rtl" aria-pressed="false">العربية</button></div>
+</dialog>
 <main id="main">
 
 <section class="hero" id="top"><div class="wrap split">
@@ -343,6 +373,129 @@ const close=()=>{nv.classList.remove("open");mb.setAttribute("aria-expanded","fa
 mb.onclick=()=>mb.setAttribute("aria-expanded",nv.classList.toggle("open"));
 nv.onclick=e=>{if(e.target.closest("a"))close()};
 addEventListener("keydown",e=>{if(e.key==="Escape"&&nv.classList.contains("open")){close();mb.focus()}});
+
+/* English is the default; remember a visitor's explicit choice. */
+const translations = {
+  "Skip to content": "انتقل للمحتوى",
+  "Menu": "القائمة",
+  "How it works": "طريقة الاستخدام",
+  "The device": "الجهاز",
+  "The app": "التطبيق",
+  "FAQ": "الأسئلة الشائعة",
+  "Pre-order": "احجز مسبقًا",
+  "Language": "اللغة",
+  "Choose your preferred language.": "اختار اللغة اللي تناسبك.",
+  "Choose language": "اختار اللغة",
+  "Close": "إغلاق",
+  "Main": "القائمة الرئيسية",
+  "gl0uu home": "الصفحة الرئيسية لـ gl0uu",
+  "Skin analysis that fits in your pocket.": "تحليل بشرتك في جيبك.",
+  "A small light device, your phone and AI. Scan your face at home and get a detailed look at your skin, saved in the app so you can watch it change.": "جهاز صغير بإضاءة خاصة، وموبايلك، والذكاء الاصطناعي. اعمل مسح لوشك في البيت وشوف تفاصيل بشرتك، وكل نتيجة بتتحفظ في التطبيق عشان تتابع التغيير.",
+  "Pre-order gl0uu": "احجز gl0uu مسبقًا",
+  "See how it works": "شوف بيشتغل إزاي",
+  "A skin studio, shrunk to pocket size.": "استوديو بشرة بحجم الجيب.",
+  "Detailed skin analysis used to mean a clinic visit and a large machine. gl0uu brings that idea home: special lights, your phone's camera, and AI that reads the result.": "تحليل البشرة بالتفصيل كان محتاج زيارة لعيادة وجهاز كبير. gl0uu بيقدملك الفكرة في البيت: إضاءة خاصة، وكاميرا موبايلك، وذكاء اصطناعي بيقرأ النتيجة.",
+  "No appointment. No bulky equipment. Just a clear picture of your skin, whenever you want it.": "من غير مواعيد أو أجهزة كبيرة. صورة واضحة عن بشرتك في أي وقت.",
+  "Three simple steps.": "ثلاث خطوات بسيطة.",
+  "Clip on": "ركّب",
+  "Slide your phone into the device.": "ثبّت موبايلك في الجهاز.",
+  "Hold and scan": "امسك وامسح",
+  "Hold the grip and let the lights do the work.": "امسك الجهاز وسيب الإضاءة تعمل شغلها.",
+  "See your results": "شوف نتيجتك",
+  "The app analyses your skin and saves the scan.": "التطبيق بيحلل بشرتك وبيحفظ نتيجة المسح.",
+  "Light built for skin.": "إضاءة مصممة للبشرة.",
+  "gl0uu uses special lights designed for skin analysis. They light your face evenly and the same way, scan after scan, which makes your results comparable.": "gl0uu بيستخدم إضاءة خاصة لتحليل البشرة. بتنور وشك بشكل متساوي وثابت في كل مرة، عشان تقدر تقارن نتايجك.",
+  "Special lights for skin analysis": "إضاءة خاصة لتحليل البشرة",
+  "A universal clip that fits your phone": "مشبك يناسب أنواع موبايلات مختلفة",
+  "An open frame, so nothing touches your face": "تصميم مفتوح، من غير ما حاجة تلمس وشك",
+  "Every scan, saved.": "كل نتيجة محفوظة.",
+  "Your results live in the gl0uu app. Come back any time to see how your skin has changed and what's working for you.": "نتايجك محفوظة في تطبيق gl0uu. تقدر ترجع لها في أي وقت وتشوف بشرتك اتغيرت إزاي وإيه اللي مناسب لها.",
+  "Your full history on one timeline": "كل نتايجك في مكان واحد",
+  "Compare any two scans side by side": "قارن بين أي نتيجتين جنب بعض",
+  "Watch your skin change, week by week": "تابع تغير بشرتك أسبوع بعد أسبوع",
+  "Simple, and made to be replaced.": "بسيط وسهل تبديله.",
+  "gl0uu is a low-cost, disposable device. When the battery runs out, swap it for a new one. No charging, no repairs, no fuss.": "gl0uu جهاز منخفض التكلفة وقابل للاستبدال. لما البطارية تخلص، بدّله بجهاز جديد. من غير شحن أو تصليح أو تعقيد.",
+  "Your history stays safe in the app, so a new device picks up right where the last one left off.": "نتايجك بتفضل محفوظة في التطبيق، فتقدر تكمل من حيث وقفت مع جهاز جديد.",
+  "Reserve yours.": "احجز جهازك.",
+  "Be among the first to get a gl0uu. Leave your details and we'll be in touch.": "كون من أوائل الناس اللي يعرفوا عن gl0uu. سيب بياناتك وهنتواصل معاك.",
+  "Pricing announced at launch": "السعر هيتعلن وقت الإطلاق",
+  "Shipping date to be announced": "ميعاد الشحن هيتعلن لاحقًا",
+  "Shipping date to be announced.": "ميعاد الشحن هيتعلن لاحقًا.",
+  "Price: ": "السعر: ",
+  "Estimated shipping: ": "الشحن المتوقع: ",
+  "Full name": "الاسم بالكامل",
+  "Email": "البريد الإلكتروني",
+  "Country": "البلد",
+  "Phone type (optional)": "نوع الموبايل (اختياري)",
+  "Phone (optional)": "الموبايل (اختياري)",
+  "Other": "نوع تاني",
+  "I agree to receive pre-order updates about gl0uu. I can unsubscribe at any time.": "أوافق على استلام تحديثات الحجز المسبق عن gl0uu، وأقدر ألغي الاشتراك في أي وقت.",
+  "Reserve my gl0uu": "احجز gl0uu",
+  "No payment is taken on this page.": "مش هنطلب منك أي دفع في الصفحة دي.",
+  "Thank you.": "شكرًا لك.",
+  "You're on the list. We'll email you with next steps.": "أنت على القائمة. هنبعت لك الخطوات الجاية على الإيميل.",
+  "Questions, answered.": "إجابات على أسئلتك.",
+  "What does gl0uu analyse?": "gl0uu بيحلل إيه؟",
+  "Using its lights and AI, gl0uu looks at your skin from your scan and shows the results in the app. The full list of measures will be shared before launch.": "باستخدام الإضاءة والذكاء الاصطناعي، gl0uu بيحلل صورة بشرتك وبيعرض النتيجة في التطبيق. هنشارك القائمة الكاملة للتفاصيل قبل الإطلاق.",
+  "Is it a medical device?": "هل هو جهاز طبي؟",
+  "No. gl0uu gives skin insights for general wellness and information. It does not diagnose or treat any condition. For medical concerns, please see a qualified professional.": "لأ. gl0uu بيوفر معلومات عامة عن البشرة، ومش بيشخّص أو بيعالج أي حالة. لو عندك مشكلة طبية، استشير مختص.",
+  "Will it fit my phone?": "هل يناسب موبايلي؟",
+  "gl0uu is designed for a wide range of phones with a universal clip. Tested compatibility will be published before shipping.": "gl0uu مصمم ليناسب موبايلات كتير بمشبك قابل للتعديل. هنعلن الموبايلات اللي اتجرب عليها قبل الشحن.",
+  "How is my data handled?": "إزاي بتتعاملوا مع بياناتي؟",
+  "Your scans are saved in the app. Full privacy details will be published before launch.": "نتايج المسح بتتحفظ في التطبيق. تفاصيل الخصوصية الكاملة هتتعلن قبل الإطلاق.",
+  "When will it ship?": "إمتى هيبدأ الشحن؟",
+  "Privacy": "الخصوصية",
+  "Terms": "الشروط",
+  "Contact": "تواصل معانا",
+  "© 2026 gl0uu. All rights reserved.": "© 2026 gl0uu. كل الحقوق محفوظة.",
+  "Please enter your name.": "من فضلك اكتب اسمك.",
+  "Please enter a valid email address.": "من فضلك اكتب إيميل صحيح.",
+  "Please enter your country.": "من فضلك اكتب بلدك.",
+  "Please agree to receive updates.": "من فضلك وافق على استلام التحديثات.",
+  "Sending…": "جاري الإرسال…",
+  "Sign-ups are not available yet. Please check back soon.": "التسجيل مش متاح دلوقتي. من فضلك ارجع لاحقًا.",
+  "Something went wrong. Please try again in a moment.": "حصلت مشكلة. من فضلك حاول تاني بعد شوية.",
+  "gl0uu device holding a phone between two softly lit panels": "جهاز gl0uu يحمل موبايل بين لوحين مضيئين",
+  "Front view of gl0uu with a phone held between two light panels": "منظر أمامي لجهاز gl0uu والموبايل بين لوحي الإضاءة",
+  "A hand holding gl0uu by its grip": "يد تمسك جهاز gl0uu من المقبض",
+  "Close-up of the gl0uu phone clip and body": "صورة قريبة لمشبك الموبايل وجسم جهاز gl0uu",
+  "Illustration of the gl0uu app showing a face scan and a history timeline": "رسم لتطبيق gl0uu يعرض مسح الوجه وسجل النتائج",
+  "Side view of the slim gl0uu device": "منظر جانبي لجهاز gl0uu النحيف"
+};
+const englishForArabic=Object.fromEntries(Object.entries(translations).map(([en,ar])=>[ar,en]));
+let currentLanguage="en";
+const tr=(text)=>currentLanguage==="ar"?(translations[text]||text):text;
+function changeLanguage(language){
+  currentLanguage=language==="ar"?"ar":"en";
+  document.documentElement.lang=currentLanguage;
+  document.documentElement.dir=currentLanguage==="ar"?"rtl":"ltr";
+  document.title=currentLanguage==="ar"?"gl0uu — تحليل بشرتك في جيبك":"gl0uu — Skin analysis that fits in your pocket";
+  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+  for(const node of nodes){
+    const parent=node.parentElement;if(!parent||parent.closest("script,style,svg"))continue;
+    const text=node.nodeValue,trim=text.trim();if(!trim)continue;
+    const english=englishForArabic[trim]||trim, translated=currentLanguage==="ar"?(translations[english]||english):english;
+    if(translated!==trim)node.nodeValue=text.replace(trim,translated);
+  }
+  for(const el of document.querySelectorAll('[placeholder],[alt],[aria-label],[title]')){
+    for(const attr of ['placeholder','alt','aria-label','title']){
+      if(!el.hasAttribute(attr))continue;const old=el.getAttribute(attr),en=englishForArabic[old]||old;
+      el.setAttribute(attr,currentLanguage==='ar'?(translations[en]||en):en);
+    }
+  }
+  document.querySelectorAll('.lang-option').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.language===currentLanguage)));
+  try{localStorage.setItem('gl0uu-language',currentLanguage)}catch(e){}
+}
+const langDialog=$("#lang-dialog"),langOpen=$("#lang-open");
+langOpen.addEventListener('click',()=>{close();langDialog.showModal()});
+$("#lang-close").addEventListener('click',()=>langDialog.close());
+langDialog.addEventListener('click',e=>{if(e.target===langDialog)langDialog.close()});
+langDialog.querySelectorAll('.lang-option').forEach(b=>b.addEventListener('click',()=>{changeLanguage(b.dataset.language);langDialog.close()}));
+langDialog.addEventListener('close',()=>{if(matchMedia('(max-width:879px)').matches){mb.focus()}else{langOpen.focus()}});
+let savedLanguage='en';try{savedLanguage=localStorage.getItem('gl0uu-language')||'en'}catch(e){}
+changeLanguage(savedLanguage);
+
 /* Frame the hero video and photos, but never the phone illustration. */
 const u=(c,k)=>`<svg class="o ${c}" aria-hidden="true"><use href="#${k}"/></svg>`;
 const FR='<i class="e t"></i><i class="e b"></i><i class="e l"></i><i class="e r"></i>'+
@@ -371,14 +524,14 @@ m.addEventListener("pointerleave",()=>{tx=ty=0;go()})})}
 /* form */
 const f=$("#f");
 const F={n:["#n","#e-n","Please enter your name."],m:["#m","#e-m","Please enter a valid email address."],c:["#c","#e-c","Please enter your country."],k:["#k","#e-k","Please agree to receive updates."]};
-function val(){let ok=true,first=null;for(const k in F){const[i,e,msg]=F[k],el=$(i);const good=k==="k"?el.checked:k==="m"?/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()):el.value.trim().length>0;$(e).textContent=good?"":msg;el.setAttribute("aria-invalid",!good);if(!good){ok=false;first=first||el}}if(first)first.focus();return ok}
+function val(){let ok=true,first=null;for(const k in F){const[i,e,msg]=F[k],el=$(i);const good=k==="k"?el.checked:k==="m"?/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()):el.value.trim().length>0;$(e).textContent=good?"":tr(msg);el.setAttribute("aria-invalid",!good);if(!good){ok=false;first=first||el}}if(first)first.focus();return ok}
 f.addEventListener("submit",async e=>{e.preventDefault();if(f.website.value||!val())return;
 const b=$("#sb"),d={name:f.name.value.trim(),email:f.email.value.trim(),country:f.country.value.trim(),phone:f.phone.value,consent:true};
-b.disabled=true;b.textContent="Sending…";
+b.disabled=true;b.textContent=tr("Sending…");
 const done=()=>{f.style.display="none";const o=$("#ok");o.style.display="block";o.focus()};
-if(!CONFIG.formEndpoint){b.disabled=false;b.textContent="Reserve my gl0uu";$("#fe").textContent="Sign-ups are not available yet. Please check back soon.";return}
+if(!CONFIG.formEndpoint){b.disabled=false;b.textContent=tr("Reserve my gl0uu");$("#fe").textContent=tr("Sign-ups are not available yet. Please check back soon.");return}
 try{const r=await fetch(CONFIG.formEndpoint,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(d)});if(!r.ok)throw 0;done()}
-catch{b.disabled=false;b.textContent="Reserve my gl0uu";$("#fe").textContent="Something went wrong. Please try again in a moment."}});
+catch{b.disabled=false;b.textContent=tr("Reserve my gl0uu");$("#fe").textContent=tr("Something went wrong. Please try again in a moment.")}});
 </script>
 </body>
 </html>
