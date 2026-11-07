@@ -38,8 +38,8 @@ p.l+p.l{margin-top:.9rem}
 .btn.g{background:transparent;color:var(--ink)}
 .btn.g:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 :focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:6px}
-.skip{position:absolute;left:-999px;top:0;background:var(--ink);color:var(--bg);padding:.6rem 1rem;z-index:100}
-.skip:focus{left:0}
+.skip{position:fixed;left:1rem;top:0;transform:translateY(-150%);background:var(--ink);color:var(--bg);padding:.6rem 1rem;z-index:100}
+.skip:focus{transform:none}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* header */
 header{position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:50;background:transparent;transition:background-color .5s var(--ease)}
@@ -125,7 +125,7 @@ input:focus,select:focus{border-color:var(--ink)}
 .err:empty{display:none}
 .chk{display:flex;gap:.7rem;align-items:flex-start;font-size:.85rem;color:var(--muted);line-height:1.45}
 .chk input{margin-top:.1rem;width:20px;height:20px;accent-color:var(--ink);flex:none}
-.hp{position:absolute;left:-9999px}
+.hp{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .fine{font-size:.8rem;color:var(--muted)}
 .ok{display:none;background:var(--soft);padding:clamp(1.4rem,3vw,2.2rem);border-radius:var(--r)}
 /* footer */
@@ -148,7 +148,13 @@ footer a:not(.logo):hover{color:var(--ink)}
 .hero{--mh:clamp(250px,38svh,420px)}
 .phone-media .phone{height:clamp(340px,54svh,480px)}
 .menu{display:block}
-nav{position:absolute;left:0;right:0;top:100%;display:none;padding:1rem 1.25rem 1.5rem;background:rgba(227,213,194,.55);-webkit-backdrop-filter:blur(18px) saturate(1.15);backdrop-filter:blur(18px) saturate(1.15)}
+/* One continuous frosted surface for the bar and the open menu. */
+header{height:auto}
+header.menu-open{background:rgba(227,213,194,.55);-webkit-backdrop-filter:blur(18px) saturate(1.15);backdrop-filter:blur(18px) saturate(1.15)}
+.bar{height:auto;min-height:var(--hh);flex-wrap:wrap;gap:0 1rem}
+.bar>.logo{height:var(--hh);display:inline-flex;align-items:center}
+.bar>.menu{height:var(--hh)}
+nav{position:static;flex:0 0 100%;display:none;padding:1rem 0 1.5rem;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
 nav.open{display:block}
 nav ul{flex-direction:column;align-items:flex-start;gap:1.1rem}
 nav a:not(.btn){font-size:1.1rem;color:var(--ink)}
@@ -185,7 +191,7 @@ html[lang="ar"] h1{font-size:clamp(2rem,4.6vw,4.2rem)}
 html[lang="ar"] .logo{font-family:Inter,system-ui,sans-serif;direction:ltr;unicode-bidi:isolate}
 html[lang="ar"] .sl{font-style:normal}
 html[lang="ar"] input[type=email]{direction:ltr;text-align:right}
-@media(max-width:879px){nav .lang-button{justify-content:flex-start;width:44px}nav{max-height:calc(100dvh - var(--hh));overflow-y:auto;overscroll-behavior:contain}body.menu-locked{position:fixed;top:var(--menu-scroll-top);left:0;right:0;width:100%;overflow:hidden}}
+@media(max-width:879px){nav .lang-button{justify-content:flex-start;width:44px}nav{max-height:calc(100dvh - var(--hh));overflow-y:auto;overscroll-behavior:contain}html.menu-locked,body.menu-locked{overflow:hidden;overscroll-behavior:none}}
 
 
 /* Alternate sections get a finer, lighter paper grain; footer keeps its own finish. */
@@ -377,23 +383,23 @@ CONFIG.contactEmail?$("#ct").href="mailto:"+CONFIG.contactEmail:$("#ct").parentE
 /* header */
 const hd=$("#hd"),mb=$("#mb"),nv=$("#nv");
 const sc=()=>hd.classList.toggle("s",scrollY>20);addEventListener("scroll",sc,{passive:true});sc();
-let menuScrollY=0;
 const mobileMenu=()=>matchMedia("(max-width:879px)").matches;
 function lockMenuScroll(){
-  if(!mobileMenu()||document.body.classList.contains("menu-locked"))return;
-  menuScrollY=window.scrollY;
-  document.body.style.setProperty("--menu-scroll-top",`-${menuScrollY}px`);
+  if(!mobileMenu())return;
+  document.documentElement.classList.add("menu-locked");
   document.body.classList.add("menu-locked");
 }
 function unlockMenuScroll(){
-  if(!document.body.classList.contains("menu-locked"))return;
+  document.documentElement.classList.remove("menu-locked");
   document.body.classList.remove("menu-locked");
-  document.body.style.removeProperty("--menu-scroll-top");
-  window.scrollTo(0,menuScrollY);
 }
-const close=()=>{nv.classList.remove("open");mb.setAttribute("aria-expanded","false");unlockMenuScroll()};
-mb.onclick=()=>{const opened=nv.classList.toggle("open");mb.setAttribute("aria-expanded",String(opened));if(opened)lockMenuScroll();else unlockMenuScroll()};
+const close=()=>{nv.classList.remove("open");hd.classList.remove("menu-open");mb.setAttribute("aria-expanded","false");unlockMenuScroll()};
+mb.onclick=()=>{const opened=nv.classList.toggle("open");hd.classList.toggle("menu-open",opened);mb.setAttribute("aria-expanded",String(opened));if(opened)lockMenuScroll();else unlockMenuScroll()};
 addEventListener("resize",()=>{if(!mobileMenu()&&nv.classList.contains("open"))close()});
+/* Stop background gestures on mobile without moving the fixed header. Allow the menu itself to scroll on short screens. */
+const blockBackgroundScroll=e=>{if(document.body.classList.contains("menu-locked")&&!nv.contains(e.target))e.preventDefault()};
+addEventListener("touchmove",blockBackgroundScroll,{passive:false});
+addEventListener("wheel",blockBackgroundScroll,{passive:false});
 nv.onclick=e=>{if(e.target.closest("a"))close()};
 addEventListener("keydown",e=>{if(e.key==="Escape"&&nv.classList.contains("open")){close();mb.focus()}});
 
